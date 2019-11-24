@@ -26,26 +26,23 @@ function run(){
 
   connection.query("SELECT * FROM products", function(err, results) {
     //if (err) throw err;
-    // once you have the items, prompt the user for which they'd like to buy
-    /*for(var i=0; i< results.length; i++)
+    
+    for(var i=0; i< results.length; i++)
     {
       console.log(JSON.stringify(results[i],null,2))
-    }*/
-
-    console.log(results);
+    }
+    // once you have the items, prompt the user for which they'd like to buy
     inquirer
       .prompt([
         {
           name: "choice",
           type: "input",
           message: "Enter the product id of the item you are interested in: ",
-          default: Number
         },
         {
           name: "amount",
           type: "input",
           message: "How many would you like to buy?",
-          default: Number
         }
       ])
       .then(function(answer) {
@@ -57,18 +54,18 @@ function run(){
           }
         }
         
-        var newQuantity = chosenItem.stock_quantity - answer.amount;
-        console.log(newQuantity);
+        var newQuantity = chosenItem.stock_quantity - parseInt(answer.amount);
         // determine if item is in stock and can buy
         if (newQuantity >= 0) {
-          
           connection.query(
-            "UPDATE products SET stock_quantity = ? WHERE item_id = ?"
+            "UPDATE products SET ? WHERE ?",
             [
               {
-               newQuantity 
+              stock_quantity: newQuantity 
               },
-               chosenItem.item_id
+              {
+              item_id: chosenItem.item_id
+              }
             ],
             function(error) {
               //if (error) throw err;
